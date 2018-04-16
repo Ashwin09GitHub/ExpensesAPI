@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ExpensesDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="ExpenseCategory">
+    <Key>
+      <PropertyRef Name="ExpenseCategoryId" />
+    </Key>
+    <Property Name="ExpenseCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ExpenseCategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Expenses" Relationship="Self.FK_Expenses_ExpensesCat" FromRole="ExpenseCategory" ToRole="Expenses" />
+  </EntityType>
+  <EntityType Name="Expens">
+    <Key>
+      <PropertyRef Name="ExpenseId" />
+    </Key>
+    <Property Name="ExpenseId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ExpenseCatId" Type="Int32" />
+    <Property Name="ExpenseDate" Type="DateTime" Precision="0" />
+    <Property Name="ExpenseCost" Type="Int32" />
+    <Property Name="Comment" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="UserId" Type="Int32" />
+    <NavigationProperty Name="ExpenseCategory" Relationship="Self.FK_Expenses_ExpensesCat" FromRole="Expenses" ToRole="ExpenseCategory" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Expenses_User" FromRole="Expenses" ToRole="User" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Fname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Lname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <NavigationProperty Name="Expenses" Relationship="Self.FK_Expenses_User" FromRole="User" ToRole="Expenses" />
+  </EntityType>
+  <Association Name="FK_Expenses_ExpensesCat">
+    <End Role="ExpenseCategory" Type="Self.ExpenseCategory" Multiplicity="0..1" />
+    <End Role="Expenses" Type="Self.Expens" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ExpenseCategory">
+        <PropertyRef Name="ExpenseCategoryId" />
+      </Principal>
+      <Dependent Role="Expenses">
+        <PropertyRef Name="ExpenseCatId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Expenses_User">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Expenses" Type="Self.Expens" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Expenses">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ExpensesDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="ExpenseCategories" EntityType="Self.ExpenseCategory" />
+    <EntitySet Name="Expenses" EntityType="Self.Expens" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <AssociationSet Name="FK_Expenses_ExpensesCat" Association="Self.FK_Expenses_ExpensesCat">
+      <End Role="ExpenseCategory" EntitySet="ExpenseCategories" />
+      <End Role="Expenses" EntitySet="Expenses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Expenses_User" Association="Self.FK_Expenses_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Expenses" EntitySet="Expenses" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
